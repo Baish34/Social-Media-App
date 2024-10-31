@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const resultAction = await dispatch(loginUser({ email, password, secret: "your-secret-key" }));
+    const resultAction = await dispatch(loginUser({ email, password, secret: "supersecretkey" }));
     
   
     if (loginUser.fulfilled.match(resultAction)) {
