@@ -10,16 +10,22 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    const resultAction = await dispatch(
-      registerUser({ userName, email, password })
-    );
-
-    if (registerUser.fulfilled.match(resultAction)) {
-      navigate("/main");
-    }
+  
+    dispatch(registerUser({ userName, email, password }))
+      .then((resultAction) => {
+        if (registerUser.fulfilled.match(resultAction)) {
+          navigate("/main");
+        } else {
+          console.error(resultAction.error.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Registration failed:", error.message);
+      });
   };
+  
 
   return (
     <form onSubmit={handleRegister} className="container p-4">

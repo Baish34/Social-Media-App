@@ -10,16 +10,23 @@ const Login = () => {
   const navigate = useNavigate(); 
   const { error } = useSelector((state) => state.auth);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    const resultAction = await dispatch(loginUser({ email, password, secret: "supersecretkey" }));
     
-  
-    if (loginUser.fulfilled.match(resultAction)) {
-      navigate("/main"); 
-    }
+    dispatch(loginUser({ email, password, secret: "supersecretkey" }))
+      .then((resultAction) => {
+        if (resultAction.type === loginUser.fulfilled.type) {
+          navigate("/main"); 
+        } else {
+          console.error(resultAction.error.message); 
+        }
+      })
+      .catch((error) => {
+        console.error("Login failed:", error.message);
+      });
   };
-
+  
+  
   return (
     <form onSubmit={handleLogin} className="container p-4">
       <h2>Login</h2>
