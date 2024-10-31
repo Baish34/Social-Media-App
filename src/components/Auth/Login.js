@@ -10,7 +10,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password, secret: "your-secret-key" }));
+    dispatch(loginUser({ email, password, secret: "supersecretkey" }));
   };
 
   return (
