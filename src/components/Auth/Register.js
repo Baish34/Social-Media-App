@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+
 const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const resultAction = await dispatch(registerUser({ userName, email, password }));
-    
+    const resultAction = await dispatch(
+      registerUser({ userName, email, password })
+    );
+
     if (registerUser.fulfilled.match(resultAction)) {
-      navigate("/main"); 
+      navigate("/main");
     }
   };
 
@@ -51,7 +54,9 @@ const Register = () => {
           required
         />
       </div>
-      <button type="submit" className="btn btn-primary">Register</button>
+      <button type="submit" className="btn btn-primary">
+        Register
+      </button>
     </form>
   );
 };
