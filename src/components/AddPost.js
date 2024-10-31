@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { createPost } from "../features/posts/postSlice";
 
 const AddPost = () => {
   const [content, setContent] = useState("");
@@ -7,8 +8,8 @@ const AddPost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addPost({ content })); // You'll need to implement addPost in the slice
-    setContent(""); // Clear the input after submission
+    dispatch(createPost({ content })); 
+    setContent(""); 
   };
 
   return (
