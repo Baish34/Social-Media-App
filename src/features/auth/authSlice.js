@@ -22,17 +22,18 @@ export const loginUser = createAsyncThunk(
         try {
             const response = await axios.post(
                 "https://social-media-app-backend-omega.vercel.app/user/login",
-                loginData
+                { ...loginData, secret: "supersecretkey" } 
             );
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
             }
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message || "Login failed");
+            return rejectWithValue(error.response?.data?.message || "Login failed");
         }
     }
 );
+
 
 const authSlice = createSlice({
     name: "auth",
