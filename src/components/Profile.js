@@ -2,8 +2,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setError } from '../redux/authSlice';
-import { setCredentials } from '../features/auth/authSlice';
+import { setError, setCredentials } from '../features/auth/authSlice';
 
 const Profile = () => {
   const dispatch = useDispatch();

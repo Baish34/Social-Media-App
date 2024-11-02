@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
-import { setCredentials, setError } from '../redux/authSlice';
+import { setCredentials, setError } from '../features/auth/authSlice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
