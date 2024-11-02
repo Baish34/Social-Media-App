@@ -12,7 +12,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const response = await axios.post('https://social-media-app-backend-omega.vercel.app/login', { email, password });
       dispatch(setCredentials({ token: response.data.token }));
     } catch (error) {
       dispatch(setError(error.response.data.message));

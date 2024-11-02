@@ -13,7 +13,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/register', { username, email, password });
+      const response = await axios.post('https://social-media-app-backend-omega.vercel.app/register', { username, email, password });
       dispatch(setCredentials({ token: response.data.token }));
     } catch (error) {
       dispatch(setError(error.response.data.message));

@@ -13,7 +13,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/profile', {
+        const response = await axios.get('https://social-media-app-backend-omega.vercel.app/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setCredentials({ token, user: response.data }));
