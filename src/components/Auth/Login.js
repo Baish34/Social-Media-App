@@ -1,57 +1,30 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom"; 
+// src/components/Login.js
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { setCredentials, setError } from '../redux/authSlice';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
-  const { error } = useSelector((state) => state.auth);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
-    dispatch(loginUser({ email, password, secret: "supersecretkey" }))
-      .then((resultAction) => {
-        if (resultAction.type === loginUser.fulfilled.type) {
-          navigate("/main"); 
-        } else {
-          console.error(resultAction.error.message); 
-        }
-      })
-      .catch((error) => {
-        console.error("Login failed:", error.message);
-      });
+    try {
+      const response = await axios.post('http://localhost:5000/login', { email, password });
+      dispatch(setCredentials({ token: response.data.token }));
+    } catch (error) {
+      dispatch(setError(error.response.data.message));
+    }
   };
-  
-  
+
   return (
-    <form onSubmit={handleLogin} className="container p-4">
+    <form onSubmit={handleLogin}>
       <h2>Login</h2>
-      {error && <p className="text-danger">{error}</p>}
-      <div className="mb-3">
-        <label>Email</label>
-        <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-3">
-        <label>Password</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit" className="btn btn-primary">Login</button>
+      <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
+      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
+      <button type="submit">Login</button>
     </form>
   );
 };

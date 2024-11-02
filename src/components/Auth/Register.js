@@ -1,68 +1,32 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { registerUser } from "../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { setCredentials, setError } from '../redux/authSlice';
 
 const Register = () => {
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-  
-    dispatch(registerUser({ userName, email, password }))
-      .then((resultAction) => {
-        if (registerUser.fulfilled.match(resultAction)) {
-          navigate("/main");
-        } else {
-          console.error(resultAction.error.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Registration failed:", error.message);
-      });
+    try {
+      const response = await axios.post('http://localhost:5000/register', { username, email, password });
+      dispatch(setCredentials({ token: response.data.token }));
+    } catch (error) {
+      dispatch(setError(error.response.data.message));
+    }
   };
-  
 
   return (
-    <form onSubmit={handleRegister} className="container p-4">
+    <form onSubmit={handleRegister}>
       <h2>Register</h2>
-      <div className="mb-3">
-        <label>Username</label>
-        <input
-          type="text"
-          className="form-control"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-3">
-        <label>Email</label>
-        <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-3">
-        <label>Password</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit" className="btn btn-primary">
-        Register
-      </button>
+      <input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} required />
+      <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
+      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
+      <button type="submit">Register</button>
     </form>
   );
 };
