@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";  
-import { loginUser } from "../features/userSlice";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../features/userSlice";
 
-function LandingPage() {
+function SignUpPage() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
-  const { userInfo, error, status } = useSelector((state) => state.user);
+  const { status, error } = useSelector((state) => state.user);
 
-  const handleLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
+    dispatch(registerUser({ username, email, password }));
   };
 
+  // Redirect to login page after successful registration
   useEffect(() => {
-    if (status === "succeeded" && userInfo) {
-      navigate("/main"); 
+    if (status === "succeeded") {
+      navigate("/");
     }
-  }, [status, userInfo, navigate]);
+  }, [status, navigate]);
 
   return (
     <div
@@ -37,14 +39,29 @@ function LandingPage() {
         }}
       >
         <h3 className="text-center mb-4" style={{ color: "#333" }}>
-          Login
+          Sign Up
         </h3>
 
         {status === "failed" && (
           <p style={{ color: "red", textAlign: "center" }}>{error}</p>
         )}
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
+          <div className="form-group mb-3">
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="username"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="form-group mb-3">
             <label htmlFor="email" className="form-label">
               Email
@@ -80,7 +97,7 @@ function LandingPage() {
             className="btn btn-primary w-100"
             style={{ marginTop: "10px" }}
           >
-            Login
+            Sign Up
           </button>
         </form>
       </div>
@@ -88,4 +105,4 @@ function LandingPage() {
   );
 }
 
-export default LandingPage;
+export default SignUpPage;

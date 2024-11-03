@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LandingPage from "./components/LandingPage";
 import Navbar from "./components/NavBar";
+import MainPage from "./components/MainPage";
+import SignUpPage from "./components/SignUpPage";
 
 function App() {
   return (
@@ -10,6 +12,8 @@ function App() {
       <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/main" element={<SignUpPage />} />
         </Routes>
     </Router>
   );
