@@ -20,10 +20,6 @@ function LandingPage() {
         backgroundColor: "#f8f9fa",
       }}
     >
-      <h1 className="mb-4" style={{ color: "#007bff" }}>
-        MyApp
-      </h1>
-
       <div
         className="card p-4 shadow"
         style={{
