@@ -32,6 +32,19 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async (_, { reject
   }
 });
 
+// Async thunk to fetch user profile and posts
+export const fetchUserProfile = createAsyncThunk("user/fetchUserProfile", async (_, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:3000/profile", {
+      headers: { Authorization: token },
+    });
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
 // Async thunk for protected data (e.g., admin data)
 export const fetchProtectedData = createAsyncThunk("user/fetchProtectedData", async (_, { rejectWithValue }) => {
   try {
@@ -54,6 +67,7 @@ const userSlice = createSlice({
     error: null,
     users: [],           
     protectedData: null, 
+    profile: null,
   },
   reducers: {
     logout: (state) => {
@@ -85,6 +99,15 @@ const userSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.profile = action.payload; // Stores profile and posts data
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = "failed";
         state.error = action.payload;
       })
       .addCase(fetchProtectedData.fulfilled, (state, action) => {

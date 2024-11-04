@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "../features/postSlice"; 
 
 const MainPage = () => {
+  
   const dispatch = useDispatch();
 
   const { posts, loading, error } = useSelector((state) => state.posts);
