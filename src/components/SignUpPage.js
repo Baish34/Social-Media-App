@@ -7,6 +7,7 @@ function SignUpPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,10 +18,14 @@ function SignUpPage() {
     dispatch(registerUser({ username, email, password }));
   };
 
-  // Redirect to login page after successful registration
+  // Show success alert and redirect to login page after registration
   useEffect(() => {
     if (status === "succeeded") {
-      navigate("/");
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        navigate("/");
+      }, 2000); // Display alert for 2 seconds before redirecting
     }
   }, [status, navigate]);
 
@@ -29,6 +34,12 @@ function SignUpPage() {
       className="d-flex flex-column align-items-center justify-content-center vh-100"
       style={{ backgroundColor: "#f8f9fa" }}
     >
+      {showAlert && (
+        <div className="alert alert-success text-center" role="alert">
+          Account created successfully! Redirecting to login...
+        </div>
+      )}
+
       <div
         className="card p-4 shadow"
         style={{

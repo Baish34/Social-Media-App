@@ -12,7 +12,7 @@ const MainPage = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="mt-5">Your Feed</h2>
+      <h2 className="mt-5">Latest Posts</h2>
 
       {loading && <p className="text-center text-primary">Loading posts...</p>}
       {error && <p className="text-center text-danger">Error: {error}</p>}
