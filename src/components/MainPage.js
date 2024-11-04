@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchUsers, followUser, unfollowUser } from "../features/userSlice"; 
 import { fetchPosts } from "../features/postSlice";
 
 const formatDate = (dateString) => {
   const now = new Date();
   const date = new Date(dateString);
   const diffInSeconds = Math.floor((now - date) / 1000);
-  
+
   if (diffInSeconds < 60) {
     return `${diffInSeconds} sec${diffInSeconds !== 1 ? 's' : ''} ago`;
   } else if (diffInSeconds < 3600) {
@@ -26,10 +27,20 @@ const formatDate = (dateString) => {
 const MainPage = () => {
   const dispatch = useDispatch();
   const { posts, loading, error } = useSelector((state) => state.posts);
+  const { users, userInfo } = useSelector((state) => state.user); 
 
   useEffect(() => {
     dispatch(fetchPosts());
+    dispatch(fetchUsers()); 
   }, [dispatch]);
+
+  const handleFollow = (userId) => {
+    dispatch(followUser(userId));
+  };
+
+  const handleUnfollow = (userId) => {
+    dispatch(unfollowUser(userId));
+  };
 
   return (
     <div className="container mt-5">
@@ -72,6 +83,29 @@ const MainPage = () => {
           ))
         ) : (
           <p className="text-center">No posts to display.</p>
+        )}
+      </div>
+
+      <h2 className="mt-5">Other Users</h2>
+      <div className="row">
+        {users.length > 0 ? (
+          users.map((user) => (
+            <div key={user._id} className="col-md-4 mb-4">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title">{user.username}</h5>
+                  <p className="card-text">Followers: {user.followers.length}</p>
+                  {userInfo.following.includes(user._id) ? (
+                    <button className="btn btn-danger" onClick={() => handleUnfollow(user._id)}>Unfollow</button>
+                  ) : (
+                    <button className="btn btn-primary" onClick={() => handleFollow(user._id)}>Follow</button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center">No users to display.</p>
         )}
       </div>
     </div>

@@ -49,16 +49,16 @@ export const fetchUserProfile = createAsyncThunk("user/fetchUserProfile", async 
 export const followUser = createAsyncThunk(
   "user/followUser",
   async (userId, { getState, rejectWithValue }) => {
-    const { user } = getState(); // Access the current user state
+    const { user } = getState(); 
     try {
       const response = await axios.post(`http://localhost:3000/follow/${userId}`, {}, {
         headers: {
-          Authorization: `Bearer ${user.token}`, // Use token for authorization
+          Authorization: `Bearer ${user.token}`,
         },
       });
-      return response.data; // Return the response data
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data); // Handle error
+      return rejectWithValue(error.response.data); 
     }
   }
 );
@@ -67,16 +67,16 @@ export const followUser = createAsyncThunk(
 export const unfollowUser = createAsyncThunk(
   "user/unfollowUser",
   async (userId, { getState, rejectWithValue }) => {
-    const { user } = getState(); // Access the current user state
+    const { user } = getState(); 
     try {
       const response = await axios.post(`http://localhost:3000/unfollow/${userId}`, {}, {
         headers: {
-          Authorization: `Bearer ${user.token}`, // Use token for authorization
+          Authorization: `Bearer ${user.token}`,
         },
       });
-      return response.data; // Return the response data
+      return response.data; 
     } catch (error) {
-      return rejectWithValue(error.response.data); // Handle error
+      return rejectWithValue(error.response.data); 
     }
   }
 );
@@ -142,23 +142,23 @@ const userSlice = createSlice({
       
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.profile = action.payload; // Stores profile and posts data
+        state.profile = action.payload; 
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
       .addCase(followUser.fulfilled, (state, action) => {
-        state.following.push(action.payload.userId); // Add the followed user to the following list
+        state.following.push(action.payload.userId); 
       })
       .addCase(followUser.rejected, (state, action) => {
-        state.error = action.payload; // Handle any errors during follow
+        state.error = action.payload; 
       })
       .addCase(unfollowUser.fulfilled, (state, action) => {
-        state.following = state.following.filter((id) => id !== action.payload.userId); // Remove the unfollowed user from the following list
+        state.following = state.following.filter((id) => id !== action.payload.userId); 
       })
       .addCase(unfollowUser.rejected, (state, action) => {
-        state.error = action.payload; // Handle any errors during unfollow
+        state.error = action.payload; 
       })
       .addCase(fetchProtectedData.fulfilled, (state, action) => {
         state.protectedData = action.payload;
