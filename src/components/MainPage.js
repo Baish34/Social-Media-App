@@ -1,18 +1,19 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts } from "../features/postSlice"; 
+import { fetchPosts } from "../features/postSlice";
+import UserProfile from "./UserProfile"; 
 
 const MainPage = () => {
-  
   const dispatch = useDispatch();
-
   const { posts, loading, error } = useSelector((state) => state.posts);
+
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
 
   return (
     <div className="container mt-5">
+      <UserProfile /> 
       <h2 className="mt-5">Latest Posts</h2>
 
       {loading && <p className="text-center text-primary">Loading posts...</p>}
