@@ -127,6 +127,7 @@ export const updateAvatar = createAsyncThunk(
   }
 );
 
+
 // Async thunk to bookmark a post
 export const bookmarkPost = createAsyncThunk(
   "user/bookmarkPost",
@@ -136,12 +137,8 @@ export const bookmarkPost = createAsyncThunk(
       const response = await axios.post(
         `http://localhost:3000/bookmark/${postId}`,
         {},
-        {
-          headers: { Authorization: token },
-        }
+        { headers: { Authorization: token } }
       );
-
-      console.log("Follow response data:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -149,28 +146,22 @@ export const bookmarkPost = createAsyncThunk(
   }
 );
 
-// Async thunk to bookmark a post
-export const removebookmark = createAsyncThunk(
-  "user/removebookmark",
+// Async thunk to remove a post from bookmarks
+export const removeBookmark = createAsyncThunk(
+  "user/removeBookmark",
   async (postId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
         `http://localhost:3000/bookmark/${postId}`,
-        {},
-        {
-          headers: { Authorization: token },
-        }
+        { headers: { Authorization: token } }
       );
-
-      console.log("Follow response data:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 // Async thunk for protected data (e.g., admin data)
 export const fetchProtectedData = createAsyncThunk(
@@ -253,19 +244,19 @@ const userSlice = createSlice({
       })
       .addCase(bookmarkPost.fulfilled, (state, action) => {
         const postId = action.payload.postId;
-        if(!state.bookmarks.includes(postId)){
-          state.bookmarks.push(postId)
+        if (!state.bookmarks.includes(postId)) {
+          state.bookmarks.push(postId);
         }
       })
       .addCase(bookmarkPost.rejected, (state, action) => {
-        state.error = action.payload
+        state.error = action.payload;
       })
-      .addCase(removebookmark.fulfilled, (state, action) => {
+      .addCase(removeBookmark.fulfilled, (state, action) => {
         const postId = action.payload.postId;
         state.bookmarks = state.bookmarks.filter((id) => id !== postId);
       })
-      .addCase(removebookmark.rejected, (state, action) => {
-        state.error = action.payload
+      .addCase(removeBookmark.rejected, (state, action) => {
+        state.error = action.payload;
       })
       .addCase(unfollowUser.fulfilled, (state, action) => {
         const userId = action.payload.userId;
