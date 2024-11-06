@@ -199,6 +199,7 @@ const userSlice = createSlice({
     protectedData: null,
     profile: null,
     following: [],
+    bookmarks: [],
   },
   reducers: {
     logout: (state) => {
