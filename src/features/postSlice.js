@@ -27,7 +27,7 @@ export const likePosts = createAsyncThunk("posts/likePosts", async (postId, { re
   const token = localStorage.getItem("token");
   try {
     const response = await axios.post(
-      `http://localhost:3000/posts/${postId}/like`,
+      `http://localhost:3000/like/${postId}`,
       {},
       {
         headers: { Authorization: token },
@@ -44,7 +44,7 @@ export const unlikePosts = createAsyncThunk("posts/unlikePosts", async (postId, 
   const token = localStorage.getItem("token");
   try {
     const response = await axios.post(
-      `http://localhost:3000/posts/${postId}/unlike`,
+      `http://localhost:3000/like/${postId}`,
       {},
       {
         headers: { Authorization: token },
