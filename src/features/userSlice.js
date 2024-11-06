@@ -45,35 +45,21 @@ export const fetchUserProfile = createAsyncThunk("user/fetchUserProfile", async 
   }
 });
 
-// Async thunk for following a user
+// Async thunk to follow a user
 export const followUser = createAsyncThunk(
   "user/followUser",
-  async (userId, { getState, rejectWithValue }) => {
-    const { user } = getState(); 
+  async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`http://localhost:3000/follow/${userId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data); 
-    }
-  }
-);
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `http://localhost:3000/follow/${userId}`,
+        {},
+        {
+         headers: { Authorization: token }
+        }
+      );
 
-// Async thunk for unfollowing a user
-export const unfollowUser = createAsyncThunk(
-  "user/unfollowUser",
-  async (userId, { getState, rejectWithValue }) => {
-    const { user } = getState(); 
-    try {
-      const response = await axios.post(`http://localhost:3000/unfollow/${userId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+      console.log("Follow response data:", response.data);
       return response.data; 
     } catch (error) {
       return rejectWithValue(error.response.data); 
@@ -81,6 +67,21 @@ export const unfollowUser = createAsyncThunk(
   }
 );
 
+export const unfollowUser = createAsyncThunk(
+  "user/unfollowUser",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`http://localhost:3000/unfollow/${userId}`, {}, {
+        headers: { Authorization: token }
+      });
+      console.log("Unfollow response data:", response.data);
+      return response.data; 
+    } catch (error) {
+      return rejectWithValue(error.response.data); 
+    }
+  }
+);
 
 // Async thunk for protected data (e.g., admin data)
 export const fetchProtectedData = createAsyncThunk("user/fetchProtectedData", async (_, { rejectWithValue }) => {
@@ -149,13 +150,17 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(followUser.fulfilled, (state, action) => {
-        state.following.push(action.payload.userId); 
+        const userId = action.payload.userId;
+        if (!state.following.includes(userId)) {
+          state.following.push(userId);
+        }
       })
       .addCase(followUser.rejected, (state, action) => {
         state.error = action.payload; 
       })
       .addCase(unfollowUser.fulfilled, (state, action) => {
-        state.following = state.following.filter((id) => id !== action.payload.userId); 
+        const userId = action.payload.userId;
+        state.following = state.following.filter((id) => id !== userId);
       })
       .addCase(unfollowUser.rejected, (state, action) => {
         state.error = action.payload; 

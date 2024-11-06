@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../features/userSlice";
 
 function SignUpPage() {
-  const [username, setUsername] = useState("");
+  const [name, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showAlert, setShowAlert] = useState(false);
@@ -15,7 +15,7 @@ function SignUpPage() {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    dispatch(registerUser({ username, email, password }));
+    dispatch(registerUser({ name, email, password }));
   };
 
   // Show success alert and redirect to login page after registration
@@ -67,7 +67,7 @@ function SignUpPage() {
               className="form-control"
               id="username"
               placeholder="Enter username"
-              value={username}
+              value={name}
               onChange={(e) => setUsername(e.target.value)}
               required
             />

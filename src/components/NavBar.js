@@ -13,10 +13,15 @@ function Navbar() {
     navigate("/");
   };
 
+  
+  const handleProfile = () => {
+    navigate(`/profile/${userInfo._id}`);
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-secondary">
+    <nav className="navbar navbar-expand-lg navbar-light bg-primary">
       <div className="container">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand text-white" to="/">
           Connectify
         </Link>
         <button
@@ -32,33 +37,33 @@ function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Home
-              </Link>
-            </li>
             {userInfo ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/main">
+                  <Link className="nav-link text-white" to="/main">
                     Dashboard
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <button className="btn btn-link nav-link" onClick={handleLogout}>
+                  <button className="btn btn-link nav-link text-white" onClick={handleLogout}>
                     Logout
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button className="btn btn-link nav-link text-white" onClick={handleProfile}>
+                    Profile
                   </button>
                 </li>
               </>
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
+                  <Link className="nav-link text-white" to="/">
                     Login
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/signup">
+                  <Link className="nav-link text-white" to="/signup">
                     Sign Up
                   </Link>
                 </li>
