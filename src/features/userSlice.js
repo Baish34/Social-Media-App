@@ -250,6 +250,22 @@ const userSlice = createSlice({
       .addCase(followUser.rejected, (state, action) => {
         state.error = action.payload;
       })
+      .addCase(bookmarkPost.fulfilled, (state, action) => {
+        const postId = action.payload.postId;
+        if(!state.bookmarks.includes(postId)){
+          state.bookmarks.push(postId)
+        }
+      })
+      .addCase(bookmarkPost.rejected, (state, action) => {
+        state.error = action.payload
+      })
+      .addCase(removebookmark.fulfilled, (state, action) => {
+        const postId = action.payload.postId;
+        state.bookmarks = state.bookmarks.filter((id) => id !== postId);
+      })
+      .addCase(removebookmark.rejected, (state, action) => {
+        state.error = action.payload
+      })
       .addCase(unfollowUser.fulfilled, (state, action) => {
         const userId = action.payload.userId;
         state.following = state.following.filter((id) => id !== userId);
