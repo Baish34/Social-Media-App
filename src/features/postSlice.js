@@ -6,6 +6,7 @@ const API_URL = "http://localhost:3000/posts";
 // Async thunk to fetch all posts
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await axios.get(API_URL);
+  console.log("Posts Response:", response.data);
   return response.data;
 });
 

@@ -49,6 +49,7 @@ const MainPage = () => {
     ? users.filter((user) => user._id !== userInfo._id)
     : [];
 
+
   return (
     <div className="bg-light min-vh-100">
       <br />
@@ -66,52 +67,64 @@ const MainPage = () => {
               )}
               <div className="row">
                 {otherUserPosts.length > 0 ? (
-                  otherUserPosts.map((post) => (
-                    <div key={post._id} className="col-12 mb-4">
-                      <div className="card h-100 shadow-sm border-0">
-                        <div className="card-body">
-                          <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h5 className="card-title mb-0 text-dark">
-                              {post.user.name}
-                            </h5>
-                            <small className="text-muted">
-                              {formatDate(post.createdAt)}
-                            </small>
-                          </div>
-                          <p className="card-text">{post.content}</p>
-                          {post.media && post.media.length > 0 && (
-                            <div className="d-flex flex-wrap gap-2">
-                              {post.media.map((mediaUrl, index) => (
+                  otherUserPosts.map((post) => {
+                    const avatarUrl = post.user.avatar || "https://via.placeholder.com/50";
+                    return (
+                      <div key={post._id} className="col-12 mb-4">
+                        <div className="card h-100 shadow-sm border-0">
+                          <div className="card-body">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                              {/* Profile Picture and Name */}
+                              <div className="d-flex align-items-center">
                                 <img
-                                  key={index}
-                                  src={mediaUrl}
-                                  alt="Post media"
-                                  className="img-fluid rounded"
-                                  style={{ maxWidth: "100%", height: "auto" }}
+                                  src={avatarUrl}
+                                  alt={`${post.user.name}'s avatar`}
+                                  className="rounded-circle me-2"
+                                  style={{ width: "50px", height: "50px", objectFit: "cover" }}
                                 />
-                              ))}
+                                <h5 className="card-title mb-0 text-dark">
+                                  {post.user.name}
+                                </h5>
+                              </div>
+                              <small className="text-muted">
+                                {formatDate(post.createdAt)}
+                              </small>
                             </div>
-                          )}
-                        </div>
-                        <div className="card-footer bg-white border-0 text-center">
-                          <div className="d-flex justify-content-around align-items-center">
-                            <button className="btn btn-link text-decoration-none text-dark">
-                              <i className="fas fa-thumbs-up"></i> Like
-                            </button>
-                            <button className="btn btn-link text-decoration-none text-dark">
-                              <i className="fas fa-comment"></i> Comment
-                            </button>
-                            <button className="btn btn-link text-decoration-none text-dark">
-                              <i className="fas fa-share"></i> Share
-                            </button>
-                            <button className="btn btn-link text-decoration-none text-dark">
-                              <i className="fas fa-bookmark"></i> Bookmark
-                            </button>
+                            <p className="card-text">{post.content}</p>
+                            {post.media && post.media.length > 0 && (
+                              <div className="d-flex flex-wrap gap-2">
+                                {post.media.map((mediaUrl, index) => (
+                                  <img
+                                    key={index}
+                                    src={mediaUrl}
+                                    alt="Post media"
+                                    className="img-fluid rounded"
+                                    style={{ maxWidth: "100%", height: "auto" }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="card-footer bg-white border-0 text-center">
+                            <div className="d-flex justify-content-around align-items-center">
+                              <button className="btn btn-link text-decoration-none text-dark">
+                                <i className="fas fa-thumbs-up"></i> Like
+                              </button>
+                              <button className="btn btn-link text-decoration-none text-dark">
+                                <i className="fas fa-comment"></i> Comment
+                              </button>
+                              <button className="btn btn-link text-decoration-none text-dark">
+                                <i className="fas fa-share"></i> Share
+                              </button>
+                              <button className="btn btn-link text-decoration-none text-dark">
+                                <i className="fas fa-bookmark"></i> Bookmark
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <p className="text-center">No posts to display.</p>
                 )}
@@ -131,9 +144,17 @@ const MainPage = () => {
                       className="d-flex justify-content-between align-items-center py-2"
                       style={{ borderBottom: "1px solid #e9ecef" }}
                     >
-                      <h5 className="mb-0">
-                        <span>{user.name}</span>
-                      </h5>
+                      <div className="d-flex align-items-center">
+                        <img
+                          src={user.avatar || "https://via.placeholder.com/50"}
+                          alt={`${user.name}'s avatar`}
+                          className="rounded-circle me-2"
+                          style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                        />
+                        <h5 className="mb-0">
+                          <span>{user.name}</span>
+                        </h5>
+                      </div>
                       {userInfo && userInfo.following.includes(user._id) ? (
                         <button
                           className="btn btn-danger btn-sm"
