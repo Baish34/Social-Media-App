@@ -6,11 +6,10 @@ const API_URL = "http://localhost:3000/posts";
 // Async thunk to fetch all posts
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await axios.get(API_URL);
-  console.log("Posts Response:", response.data);
   return response.data;
 });
 
-// In postSlice.js (or similar)
+// Async thunk to fetch posts by user ID
 export const fetchUserPosts = createAsyncThunk(
   "posts/fetchUserPosts",
   async (userId, { rejectWithValue }) => {
@@ -23,6 +22,39 @@ export const fetchUserPosts = createAsyncThunk(
   }
 );
 
+// Async thunk to like a post
+export const likePosts = createAsyncThunk("posts/likePosts", async (postId, { rejectWithValue }) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.post(
+      `http://localhost:3000/posts/${postId}/like`,
+      {},
+      {
+        headers: { Authorization: token },
+      }
+    );
+    return { postId, ...response.data };
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
+// Async thunk to unlike a post
+export const unlikePosts = createAsyncThunk("posts/unlikePosts", async (postId, { rejectWithValue }) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.post(
+      `http://localhost:3000/posts/${postId}/unlike`,
+      {},
+      {
+        headers: { Authorization: token },
+      }
+    );
+    return { postId, ...response.data };
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
 
 // Async thunk to create a new post
 export const createPost = createAsyncThunk(
@@ -30,7 +62,7 @@ export const createPost = createAsyncThunk(
   async (postData) => {
     const token = localStorage.getItem("token");
     const response = await axios.post(API_URL, postData, {
-      headers: { Authorization: token},
+      headers: { Authorization: token },
     });
     return response.data;
   }
@@ -79,6 +111,36 @@ const postSlice = createSlice({
         state.posts = action.payload; 
       })
       .addCase(fetchUserPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(likePosts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(likePosts.fulfilled, (state, action) => {
+        state.loading = false;
+        const post = state.posts.find(post => post._id === action.payload.postId);
+        if (post) {
+          post.likes = action.payload.likes;
+        }
+      })
+      .addCase(likePosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(unlikePosts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(unlikePosts.fulfilled, (state, action) => {
+        state.loading = false;
+        const post = state.posts.find(post => post._id === action.payload.postId);
+        if (post) {
+          post.likes = action.payload.likes;
+        }
+      })
+      .addCase(unlikePosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
