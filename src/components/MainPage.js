@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers, followUser, unfollowUser } from "../features/userSlice";
-import { fetchPosts } from "../features/postSlice";
+import { fetchPosts, likePost, unlikePost } from "../features/postSlice";
 
 const formatDate = (dateString) => {
   const now = new Date();
@@ -42,20 +42,27 @@ const MainPage = () => {
     dispatch(unfollowUser(userId));
   };
 
+  const handleLike = (postId) => {
+    dispatch(likePost(postId));
+  };
+
+  const handleUnlike = (postId) => {
+    dispatch(unlikePost(postId));
+  };
+
   const otherUserPosts = userInfo
-    ? posts.filter((post) => post.user._id !== userInfo._id)
-    : [];
-  const otherUsers = userInfo
-    ? users.filter((user) => user._id !== userInfo._id)
+    ? posts.filter((post) => post.user?._id !== userInfo._id)
     : [];
 
+  const otherUsers = userInfo
+    ? users.filter((user) => user?._id !== userInfo._id)
+    : [];
 
   return (
     <div className="bg-light min-vh-100">
       <br />
       <div className="container">
         <div className="row">
-          {/* Posts Section (Left) */}
           <div className="col-md-8">
             <section className="mb-5">
               <h2 className="text-secondary mb-4">Latest Posts</h2>
@@ -63,27 +70,37 @@ const MainPage = () => {
                 <p className="text-center text-primary">Loading posts...</p>
               )}
               {error && (
-                <p className="text-center text-danger">Error: {error}</p>
+                <p className="text-center text-danger">
+                  Error:{" "}
+                  {typeof error === "object"
+                    ? error.message || "An error occurred"
+                    : error}
+                </p>
               )}
               <div className="row">
                 {otherUserPosts.length > 0 ? (
                   otherUserPosts.map((post) => {
-                    const avatarUrl = post.user.avatar || "https://via.placeholder.com/50";
+                    const avatarUrl =
+                      post.user?.avatar || "https://via.placeholder.com/50";
+                    const isLiked = post.likes.includes(userInfo?._id);
                     return (
                       <div key={post._id} className="col-12 mb-4">
                         <div className="card h-100 shadow-sm border-0">
                           <div className="card-body">
                             <div className="d-flex justify-content-between align-items-center mb-3">
-                              {/* Profile Picture and Name */}
                               <div className="d-flex align-items-center">
                                 <img
                                   src={avatarUrl}
-                                  alt={`${post.user.name}'s avatar`}
+                                  alt={`${post.user?.name}'s avatar`}
                                   className="rounded-circle me-2"
-                                  style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                  style={{
+                                    width: "50px",
+                                    height: "50px",
+                                    objectFit: "cover",
+                                  }}
                                 />
                                 <h5 className="card-title mb-0 text-dark">
-                                  {post.user.name}
+                                  {post.user?.name}
                                 </h5>
                               </div>
                               <small className="text-muted">
@@ -107,8 +124,22 @@ const MainPage = () => {
                           </div>
                           <div className="card-footer bg-white border-0 text-center">
                             <div className="d-flex justify-content-around align-items-center">
-                              <button className="btn btn-link text-decoration-none text-dark">
-                                <i className="fas fa-thumbs-up"></i> Like
+                              <button
+                                className="btn btn-link text-decoration-none text-dark"
+                                onClick={() =>
+                                  isLiked
+                                    ? handleUnlike(post._id)
+                                    : handleLike(post._id)
+                                }
+                              >
+                                <i
+                                  className={
+                                    isLiked
+                                      ? "fa-solid fa-thumbs-up text-primary"
+                                      : "fa-regular fa-thumbs-up"
+                                  }
+                                ></i>{" "}
+                                {isLiked ? "Unlike" : "Like"}
                               </button>
                               <button className="btn btn-link text-decoration-none text-dark">
                                 <i className="fas fa-comment"></i> Comment
@@ -117,7 +148,7 @@ const MainPage = () => {
                                 <i className="fas fa-share"></i> Share
                               </button>
                               <button className="btn btn-link text-decoration-none text-dark">
-                                <i className="fas fa-bookmark"></i> Bookmark
+                                <i className="fa-regular fa-bookmark"></i> Bookmark
                               </button>
                             </div>
                           </div>
@@ -132,7 +163,6 @@ const MainPage = () => {
             </section>
           </div>
 
-          {/* Users Section (Right) */}
           <div className="col-md-4">
             <section className="mb-5">
               <h2 className="text-secondary mb-4">Other Users</h2>
@@ -149,7 +179,11 @@ const MainPage = () => {
                           src={user.avatar || "https://via.placeholder.com/50"}
                           alt={`${user.name}'s avatar`}
                           className="rounded-circle me-2"
-                          style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            objectFit: "cover",
+                          }}
                         />
                         <h5 className="mb-0">
                           <span>{user.name}</span>

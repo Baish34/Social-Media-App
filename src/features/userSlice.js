@@ -76,8 +76,6 @@ export const followUser = createAsyncThunk(
           headers: { Authorization: token },
         }
       );
-
-      console.log("Follow response data:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -97,7 +95,6 @@ export const unfollowUser = createAsyncThunk(
           headers: { Authorization: token },
         }
       );
-      console.log("Unfollow response data:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -119,42 +116,6 @@ export const updateAvatar = createAsyncThunk(
         {
           headers: { Authorization: token },
         }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-
-// Async thunk to bookmark a post
-export const bookmarkPost = createAsyncThunk(
-  "user/bookmarkPost",
-  async (postId, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `http://localhost:3000/bookmark/${postId}`,
-        {},
-        { headers: { Authorization: token } }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-// Async thunk to remove a post from bookmarks
-export const removeBookmark = createAsyncThunk(
-  "user/removeBookmark",
-  async (postId, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(
-        `http://localhost:3000/bookmark/${postId}`,
-        { headers: { Authorization: token } }
       );
       return response.data;
     } catch (error) {
@@ -235,32 +196,16 @@ const userSlice = createSlice({
       })
       .addCase(followUser.fulfilled, (state, action) => {
         const userId = action.payload.userId;
-        if (!state.following.includes(userId)) {
-          state.following.push(userId);
+        if (!state.userInfo.following.includes(userId)) {
+          state.userInfo.following.push(userId);
         }
       })
       .addCase(followUser.rejected, (state, action) => {
         state.error = action.payload;
       })
-      .addCase(bookmarkPost.fulfilled, (state, action) => {
-        const postId = action.payload.postId;
-        if (!state.bookmarks.includes(postId)) {
-          state.bookmarks.push(postId);
-        }
-      })
-      .addCase(bookmarkPost.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(removeBookmark.fulfilled, (state, action) => {
-        const postId = action.payload.postId;
-        state.bookmarks = state.bookmarks.filter((id) => id !== postId);
-      })
-      .addCase(removeBookmark.rejected, (state, action) => {
-        state.error = action.payload;
-      })
       .addCase(unfollowUser.fulfilled, (state, action) => {
         const userId = action.payload.userId;
-        state.following = state.following.filter((id) => id !== userId);
+        state.userInfo.following = state.userInfo.following.filter((id) => id !== userId);
       })
       .addCase(unfollowUser.rejected, (state, action) => {
         state.error = action.payload;
